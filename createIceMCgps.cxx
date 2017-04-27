@@ -38,9 +38,7 @@ int main(int argc, char *argv[]){
   const Int_t firstRun = atoi(argv[1]);
   const Int_t lastRun = argc==3 ? atoi(argv[2]) : firstRun;
 
-
   AnitaVersion::set(3);
-
 
   FileStat_t staty;
   char gpsName[FILENAME_MAX];
