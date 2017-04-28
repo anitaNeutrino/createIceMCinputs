@@ -58,7 +58,7 @@ set(ANITA_LIBS AnitaEvent AnitaAnalysis AnitaAnalysisTools AnitaCorrelator RootF
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow")
 
-set(BINARIES createIceMCSurfFromGps createIceMCTurfFromGps createIceMCgps)
+set(BINARIES createIceMCSurfFromGps createIceMCTurfFromGps createIceMCgps createIceMCSurfFromGpsA4 createIceMCTurfFromGpsA4 createIceMCgpsA4)
 
 FOREACH(binary ${BINARIES})
   MESSAGE(STATUS "Process file: ${binary}")
