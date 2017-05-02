@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
   // TChain *gpsChain = new TChain("adu5PatTree");
 
   for (int run=firstRun;run<lastRun+1; run++){
-    sprintf(surfName,"$unix/anita4/flight2016/root/run%d/surfHkFile%d.root",run,run);
+    sprintf(surfName,"/unix/anita4/flight2016/root/run%d/surfHkFile%d.root",run,run);
     // sprintf(gpsName,"/unix/anita3/flight1415/root/run%d/gpsFile%d.root",run,run);
     if(gSystem->GetPathInfo(surfName,staty)) {
       continue;

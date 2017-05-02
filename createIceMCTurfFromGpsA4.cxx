@@ -60,8 +60,8 @@ int main(int argc, char *argv[]){
 
   for (int run=firstRun;run<lastRun+1; run++){
     sprintf(turfName,"/unix/anita4/flight2016/root/run%d/turfRateFile%d.root",run,run);
-    // sprintf(gpsName,"/unix/anita3/flight1415/root/run%d/gpsFile%d.root",run,run);
     if(gSystem->GetPathInfo(turfName,staty)) {
+      cout << turfName << endl;
       continue;
     }
     turfChain->Add(turfName);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
   turfChain->SetBranchAddress("turf",&turf);
   // gpsChain->SetBranchAddress("pat", &pat);
 
-  turfChain->BuildIndex("turf->realTime");
+  turfChain->BuildIndex("realTime");
 
   UInt_t numEntries=turfChain->GetEntries();
   cout << "There are " << numEntries << " in total "<< endl;
@@ -82,6 +82,7 @@ int main(int argc, char *argv[]){
   UInt_t phiTrigMaskH ;
   UInt_t l1TrigMaskH ;
   UInt_t realTime ;
+  Int_t irun=0;
 
 
   TTree* tree = new TTree();
@@ -104,7 +105,7 @@ int main(int argc, char *argv[]){
       realTime = icemcRealTime;
       phiTrigMask=l1TrigMask=phiTrigMaskH=l1TrigMaskH=65536;
 
-      cout << "Can't find even best Index for this " << icemcRealTime << endl;
+      cout << "Can't even find best Index for this " << icemcRealTime << ". Last good run was " << irun << endl;
 
     } else {
 
@@ -113,13 +114,14 @@ int main(int argc, char *argv[]){
       realTime = turf->realTime;
       int diffTime = (int)icemcRealTime - (int)realTime;
 
-      if (TMath::Abs(diffTime)>60) cout << icemcRealTime << " " << realTime << " " << diffTime << endl;
+      if (TMath::Abs(diffTime)>60) cout << icemcRealTime << " " << realTime << " " << diffTime << "  " << "run number is " << turf->run << endl;
+      
       
       phiTrigMask  = (turf->phiTrigMask );
       l1TrigMask   = (turf->l2TrigMask  );
       phiTrigMaskH = (turf->phiTrigMaskH);
       l1TrigMaskH  = (turf->l2TrigMaskH );
-      
+      irun         = (turf->run);
     }
     tree->Fill();
       

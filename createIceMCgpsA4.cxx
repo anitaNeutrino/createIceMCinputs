@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
   
   gpsChain->SetBranchAddress("pat", &pat);
   
-  gpsChain->BuildIndex("pat->realTime");
+  gpsChain->BuildIndex("realTime");
   
   UInt_t numEntries=gpsChain->GetEntries();
   cout << "There are " << numEntries << " in total "<< endl;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
   // Skip from 1420749855 to 1420751715 
   Int_t badPeriodStart = 1420749800;
   Int_t badPeriodEnd   = 1420751715;
-              
+  
   ProgressBar p((lastTS-firstTS)/granularity);
   
   //for (unsigned int entry=0;entry<numEntries;entry++){
