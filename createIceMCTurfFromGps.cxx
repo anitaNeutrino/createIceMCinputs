@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
   UInt_t l1TrigMask ;
   UInt_t phiTrigMaskH ;
   UInt_t l1TrigMaskH ;
-  UInt_t deadTime ;
+  Double_t deadTime ;
   UInt_t realTime ;
 
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
   tree->Branch("phiTrigMaskH", &phiTrigMaskH, "phiTrigMaskH/I");
   tree->Branch("l1TrigMask",   &l1TrigMask,   "l1TrigMask/I"  );
   tree->Branch("l1TrigMaskH",  &l1TrigMaskH,  "l1TrigMaskH/I" );
-  tree->Branch("deadTime",     &deadTime,     "deadTime/I"    );
+  tree->Branch("deadTime",     &deadTime,     "deadTime/F"    );
 
 
   ProgressBar p(numGpsEntries);
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]){
       l1TrigMask   = (turf->l2TrigMask  );
       phiTrigMaskH = (turf->phiTrigMaskH);
       l1TrigMaskH  = (turf->l2TrigMaskH );
-      deadTime     = (turf->deadTime    );
+      deadTime     = (turf->getDeadTimeFrac() );
     }
     tree->Fill();
       
