@@ -81,6 +81,7 @@ int main(int argc, char *argv[]){
   UInt_t l1TrigMask ;
   UInt_t phiTrigMaskH ;
   UInt_t l1TrigMaskH ;
+  UInt_t deadTime ;
   UInt_t realTime ;
 
 
@@ -89,7 +90,8 @@ int main(int argc, char *argv[]){
   tree->Branch("phiTrigMask",  &phiTrigMask,  "phiTrigMask/I" );
   tree->Branch("phiTrigMaskH", &phiTrigMaskH, "phiTrigMaskH/I");
   tree->Branch("l1TrigMask",   &l1TrigMask,   "l1TrigMask/I"  );
-  tree->Branch("l1TrigMaskH",  &l1TrigMaskH,   "l1TrigMaskH/I" );
+  tree->Branch("l1TrigMaskH",  &l1TrigMaskH,  "l1TrigMaskH/I" );
+  tree->Branch("deadTime",     &deadTime,     "deadTime/I"    );
 
 
   ProgressBar p(numGpsEntries);
@@ -103,7 +105,7 @@ int main(int argc, char *argv[]){
     if (index<0) {
       realTime = icemcRealTime;
       phiTrigMask=l1TrigMask=phiTrigMaskH=l1TrigMaskH=65536;
-
+      deadTime = 0;
       cout << "Can't find even best Index for this " << icemcRealTime << endl;
 
     } else {
@@ -119,7 +121,7 @@ int main(int argc, char *argv[]){
       l1TrigMask   = (turf->l2TrigMask  );
       phiTrigMaskH = (turf->phiTrigMaskH);
       l1TrigMaskH  = (turf->l2TrigMaskH );
-      
+      deadTime     = (turf->deadTime    );
     }
     tree->Fill();
       
