@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
   tree->Branch("phiTrigMaskH", &phiTrigMaskH, "phiTrigMaskH/I");
   tree->Branch("l1TrigMask",   &l1TrigMask,   "l1TrigMask/I"  );
   tree->Branch("l1TrigMaskH",  &l1TrigMaskH,  "l1TrigMaskH/I" );
-  tree->Branch("deadTime",     &deadTime,     "deadTime/F"    );
+  tree->Branch("deadTime",     &deadTime,     "deadTime/D"    );
 
 
   ProgressBar p(numGpsEntries);
