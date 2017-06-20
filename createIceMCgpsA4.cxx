@@ -119,12 +119,12 @@ int main(int argc, char *argv[]){
 
   badPeriodStart[0] = 1481680783;
   badPeriodStart[1] = 1482474256;
-  badPeriodStart[2] = 1482605801;
-  badPeriodStart[3] = 1483003713; 
+  badPeriodStart[2] = 1482605592;
+  badPeriodStart[3] = 1483003713;
 
   badPeriodEnd[0] = badPeriodStart[0] + 913; 
-  badPeriodEnd[1] = badPeriodStart[1] + 4120; 
-  badPeriodEnd[2] = badPeriodStart[2] + 15; 
+  badPeriodEnd[1] = badPeriodStart[1] + 44256; 
+  badPeriodEnd[2] = badPeriodStart[2] + 224;
   badPeriodEnd[3] = badPeriodStart[3] + 850; 
 
   ProgressBar p((lastTS-firstTS)/granularity);
@@ -132,11 +132,20 @@ int main(int argc, char *argv[]){
   //for (unsigned int entry=0;entry<numEntries;entry++){
 
   while(realTime_old<=lastTS){
+      
+      if (realTime_old > badPeriodStart[3])
+        {
+            break;
+        }
 
-    for (int ibad = 0; ibad < num_bad; ibad++)
-     {
-       while (realTime_old>=badPeriodStart[ibad] && realTime_old<=badPeriodEnd[ibad]) realTime_old=realTime_old+granularity;
-     }
+      for (int ibad = 0; ibad < num_bad-1; ibad++)
+      {
+          while (realTime_old>=badPeriodStart[ibad] && realTime_old<=badPeriodEnd[ibad])
+          {
+              realTime_old=realTime_old+granularity;
+           
+          }
+      }
     
     int index = gpsChain->GetEntryNumberWithIndex(realTime_old);
     p++;
