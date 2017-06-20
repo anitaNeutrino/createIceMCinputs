@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
   // TChain *gpsChain = new TChain("adu5PatTree");
 
   for (int run=firstRun;run<lastRun+1; run++){
-    sprintf(surfName,"/unix/anita4/flight2016/root/run%d/surfHkFile%d.root",run,run);
+    sprintf(surfName,"/Users/oindreebanerjee/OneDrive/flight1617/surfHk/surfHkFile%d.root",run);
     // sprintf(gpsName,"/unix/anita3/flight1415/root/run%d/gpsFile%d.root",run,run);
     if(gSystem->GetPathInfo(surfName,staty)) {
       continue;
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]){
   
   
   cout << " Writing output " << endl;
-  TFile *output = new TFile (Form("partial/SampleSurf_run%d_anita4.root", firstRun), "recreate");
+  TFile *output = new TFile (Form("partial/SampleSurf_run%dto%d_anita4.root", firstRun, lastRun), "recreate");
   tree->Write("surf_icemc");
   cout << "Done " << endl;
   output->Close();

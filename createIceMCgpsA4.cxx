@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
   TChain *gpsChain = new TChain("adu5PatTree");
   
   for (int run=firstRun;run<lastRun+1; run++){
-    sprintf(gpsName,"/unix/anita4/flight2016/root/run%d/timedGpsEvent%d.root",run,run);
+    sprintf(gpsName,"/Users/oindreebanerjee/OneDrive/flight1617/timedGps/timedGpsEvent%d.root",run);
     cout << gpsName << endl;
     if(gSystem->GetPathInfo(gpsName,staty)) {
       continue;
@@ -102,23 +102,44 @@ int main(int argc, char *argv[]){
 
   UInt_t realTime_old = firstTS;
 
+  // Bad periods in different flights 
+
+  int num_bad = 4; //ANITA-4
+  //int num_bad = 1; //ANITA-3
+
+  // ANITA-3 had the following bad time period 
   // Skip from 1420749855 to 1420751715 
-  Int_t badPeriodStart = 1420749800;
-  Int_t badPeriodEnd   = 1420751715;
-  
+  //Int_t badPeriodStart = 1420749800;
+  //Int_t badPeriodEnd   = 1420751715;
+
+  // ANITA-4 had four bad time periods, these were in runs 183, 293, 311, 367 --> oindree 
+ 
+  Int_t badPeriodStart[num_bad];
+  Int_t badPeriodEnd[num_bad]; 
+
+  badPeriodStart[0] = 1481680783;
+  badPeriodStart[1] = 1482474256;
+  badPeriodStart[2] = 1482605801;
+  badPeriodStart[3] = 1483003713; 
+
+  badPeriodEnd[0] = badPeriodStart[0] + 913; 
+  badPeriodEnd[1] = badPeriodStart[1] + 4120; 
+  badPeriodEnd[2] = badPeriodStart[2] + 15; 
+  badPeriodEnd[3] = badPeriodStart[3] + 850; 
+
   ProgressBar p((lastTS-firstTS)/granularity);
   
   //for (unsigned int entry=0;entry<numEntries;entry++){
 
   while(realTime_old<=lastTS){
 
-    while (realTime_old>=badPeriodStart && realTime_old<=badPeriodEnd) realTime_old=realTime_old+granularity;
-
+    for (int ibad = 0; ibad < num_bad; ibad++)
+     {
+       while (realTime_old>=badPeriodStart[ibad] && realTime_old<=badPeriodEnd[ibad]) realTime_old=realTime_old+granularity;
+     }
+    
     int index = gpsChain->GetEntryNumberWithIndex(realTime_old);
     p++;
-
-   
-
     if (index>0){
       gpsChain->GetEntry(index);
 
@@ -133,10 +154,7 @@ int main(int argc, char *argv[]){
 	index = gpsChain->GetEntryNumberWithBestIndex(realTime_old);
 	gpsChain->GetEntry(index);
       }
-
     }
-
-
     // gpsChain->GetEntry(entry);
     // realTime = pat->realTime;
     // if (realTime-realTime_old<granularity) continue;
@@ -148,7 +166,6 @@ int main(int argc, char *argv[]){
     //   gpsChain->GetEntry(entry);
     //   p++;
     // }
-         
     realTime  = pat->realTime;
     heading   = pat->heading;
     latitude  = pat->latitude;
@@ -158,29 +175,19 @@ int main(int argc, char *argv[]){
     roll      = pat->roll;
     realTime_old = realTime+granularity;
     tree->Fill();
-
-
-
     // double pos[3];
     // getCartesianCoords(latitude, longitude, altitude, pos);
     // htemp->Fill(pos[0], pos[1]);
     // cout << pos[0] << " " << pos[1] << endl;
     // count ++;
-      
-  
-
   }
-  
   cout << "Saving" << endl;
   TFile *output = new TFile ("anita4gps_pitchroll.root", "recreate");
   tree->Write("adu5PatTree");
   cout << "Saved" << endl;
   output->Close();
-
   return 0;
-
 }
-
 void getCartesianCoords(Double_t lat, Double_t lon, Double_t alt, Double_t p[3])
 {
   if(lat<0) lat*=-1;

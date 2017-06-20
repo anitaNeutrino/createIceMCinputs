@@ -1,10 +1,9 @@
-////////////////////////////////  macro written by Oindree Banerjee on April 28 2017 //////////////////////
+///////////////////////////////  macro written by Oindree Banerjee on April 28 2017 //////////////////////
 /////////////////////////////// to check gps input file created for iceMC /////////////////////////////
 ////////////////////////////// by making plots //////////////////////////////////////
 
 #include "TChain.h"
 #include "TFile.h"
-#include "iostream.h"
 #include "TString.h"
 
 using namespace std; 
@@ -26,35 +25,35 @@ void checkGps()
   cc -> SaveAs("plots/heading.root"); 
   delete cc; 
 
-  TCanvas *cc = new TCanvas("cc","cc",1100,1100); 
+  TCanvas *dd = new TCanvas("dd","dd",1100,1100); 
   c.Draw("latitude:realTime","","");
-  cc -> SaveAs("plots/latitude.png");
-  cc -> SaveAs("plots/latitude.root"); 
-  delete cc; 
+  dd -> SaveAs("plots/latitude.png");
+  dd -> SaveAs("plots/latitude.root"); 
+  delete dd; 
 
-  TCanvas *cc = new TCanvas("cc","cc",1100,1100); 
+  TCanvas *ee = new TCanvas("ee","ee",1100,1100); 
   c.Draw("longitude:realTime","","");
-  cc -> SaveAs("plots/longitude.png");
-  cc -> SaveAs("plots/longitude.root"); 
-  delete cc; 
+  ee -> SaveAs("plots/longitude.png");
+  ee -> SaveAs("plots/longitude.root"); 
+  delete ee; 
 
-  TCanvas *cc = new TCanvas("cc","cc",1100,1100); 
+  TCanvas *ff = new TCanvas("ff","ff",1100,1100); 
   c.Draw("altitude:realTime","","");
-  cc -> SaveAs("plots/altitude.png");
-  cc -> SaveAs("plots/altitude.root"); 
-  delete cc; 
+  ff -> SaveAs("plots/altitude.png");
+  ff -> SaveAs("plots/altitude.root"); 
+  delete ff; 
   
-  TCanvas *cc = new TCanvas("cc","cc",1100,1100); 
+  TCanvas *gg = new TCanvas("gg","gg",1100,1100); 
   c.Draw("pitch:realTime","","");
-  cc -> SaveAs("plots/pitch.png");
-  cc -> SaveAs("plots/pitch.root"); 
-  delete cc; 
+  gg -> SaveAs("plots/pitch.png");
+  gg -> SaveAs("plots/pitch.root"); 
+  delete gg; 
 
-  TCanvas *cc = new TCanvas("cc","cc",1100,1100); 
+  TCanvas *hh = new TCanvas("hh","hh",1100,1100); 
   c.Draw("roll:realTime","","");
-  cc -> SaveAs("plots/roll.png"); 
-  cc -> SaveAs("plots/roll.root"); 
-  delete cc; 
+  hh -> SaveAs("plots/roll.png"); 
+  hh -> SaveAs("plots/roll.root"); 
+  delete hh; 
 
 
 } //macro

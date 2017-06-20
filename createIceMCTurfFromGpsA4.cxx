@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
   // TChain *gpsChain = new TChain("adu5PatTree");
 
   for (int run=firstRun;run<lastRun+1; run++){
-    sprintf(turfName,"/unix/anita4/flight2016/root/run%d/turfRateFile%d.root",run,run);
+    sprintf(turfName,"/Users/oindreebanerjee/OneDrive/flight1617/turfRate/turfRateFile%d.root",run);
     if(gSystem->GetPathInfo(turfName,staty)) {
       cout << turfName << endl;
       continue;
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]){
       realTime = turf->realTime;
       int diffTime = (int)icemcRealTime - (int)realTime;
 
-      if (TMath::Abs(diffTime)>60) cout << icemcRealTime << " " << realTime << " " << diffTime << "  " << "run number is " << turf->run << endl;
+      if (TMath::Abs(diffTime)>60) cout << "icemcRealTime is " << icemcRealTime << " " << "realTime is " << realTime << " " << "diff is " << diffTime << "  " << "run number is " << turf->run << endl;
       
       
       phiTrigMask  = (turf->phiTrigMask );
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]){
   }
   
   cout << "Creating output" << endl;
-  TFile *output = new TFile ("partial/SampleTurf_icemc_anita4.root", "recreate");
+  TFile *output = new TFile (Form("partial/SampleTurf_run%dto%d_anita4.root",firstRun,lastRun), "recreate");
   tree->Write("turfrate_icemc");
   cout << "Done " << endl;
   output->Close();
