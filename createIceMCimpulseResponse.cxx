@@ -33,7 +33,7 @@ int main(){
     for (int iring=0; iring<3; iring++){
       for (int iphi=0; iphi<16; iphi++){
 
-	sprintf(fileName, "%s/share/UCorrelator/responses/IndividualBRotter/%02d%s%s.imp", anitaInstallDir, iphi+1, sring[iring].c_str(), spol[ipol].c_str());
+	sprintf(fileName, "%s/share/AnitaAnalysisFramework/responses/IndividualBRotter/%02d%s%s.imp", anitaInstallDir, iphi+1, sring[iring].c_str(), spol[ipol].c_str());
 	
 	cout << fileName << endl;
 	TGraph *g = new TGraph (fileName);
@@ -47,7 +47,7 @@ int main(){
   }
 
 
-  sprintf(fileName, "%s/share/UCorrelator/responses/SingleBRotter/all.imp", anitaInstallDir);
+  sprintf(fileName, "%s/share/AnitaAnalysisFramework/responses/SingleBRotter/all.imp", anitaInstallDir);
   
   cout << fileName << endl;
   TGraph *g = new TGraph (fileName);
@@ -56,9 +56,20 @@ int main(){
   
   output->Write();
   output->Close();
+
+
+  TFile *output2 = new TFile("Anita3_ImpulseResponseTrigger.root", "recreate");
+   sprintf(fileName, "%s/share/AnitaAnalysisFramework/responses/TriggerBRotter/16BH.imp", anitaInstallDir);
   
-
-
+  cout << fileName << endl;
+  TGraph *gTr = new TGraph (fileName);
+  gTr->SetTitle(Form("Impulse Response: trigger path; Time [ns]; Amplitude [V]"));
+  gTr->Write(Form("gTrigPath"));
+  
+  output2->Write();
+  output2->Close();
 
   return 0;
+
+  
 }
