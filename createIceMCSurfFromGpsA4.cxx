@@ -82,7 +82,7 @@ int main(int argc, char *argv[]){
   tree->Branch("scalers",           scalers,      "scalers[2][48]/s"     );
 
 
-  ProgressBar p(numGpsEntries);
+  // ProgressBar p(numGpsEntries);
 
   cout << "Total entries " << numGpsEntries << endl;
 
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]){
 
     tree->Fill();
     
-    p++;
+    // p++;
     
   }
   

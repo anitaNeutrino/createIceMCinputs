@@ -137,7 +137,7 @@ int main(int argc, char *argv[]){
   tree->Branch("fakeThreshold2",    fakeThresholds2, "fakeThresholds2[2][48]/D"    );
   tree->Branch("fakeScaler",        fakeScalers,     "fakeScalers[2][48]/D"        );
 
-  ProgressBar p(numGpsEntries);
+  // ProgressBar p(numGpsEntries);
 
   cout << "Total entries " << numGpsEntries << endl;
 
@@ -190,7 +190,7 @@ int main(int argc, char *argv[]){
 
     tree->Fill();
     
-    p++;
+    // p++;
     
   }
   
