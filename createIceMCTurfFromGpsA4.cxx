@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
   // TChain *gpsChain = new TChain("adu5PatTree");
 
   for (int run=firstRun;run<lastRun+1; run++){
-    sprintf(turfName,"/Users/oindreebanerjee/OneDrive/flight1617/turfRate/turfRateFile%d.root",run);
+    sprintf(turfName,"/unix/anita4/flight2016/root/run%d/turfRateFile%d.root",run,run);
     if(gSystem->GetPathInfo(turfName,staty)) {
       cout << turfName << endl;
       continue;
@@ -81,6 +81,7 @@ int main(int argc, char *argv[]){
   UInt_t l1TrigMask ;
   UInt_t phiTrigMaskH ;
   UInt_t l1TrigMaskH ;
+  Double_t deadTime ;
   UInt_t realTime ;
   Int_t irun=0;
 
@@ -91,9 +92,9 @@ int main(int argc, char *argv[]){
   tree->Branch("phiTrigMaskH", &phiTrigMaskH, "phiTrigMaskH/I");
   tree->Branch("l1TrigMask",   &l1TrigMask,   "l1TrigMask/I"  );
   tree->Branch("l1TrigMaskH",  &l1TrigMaskH,   "l1TrigMaskH/I" );
+  tree->Branch("deadTime",     &deadTime,      "deadTime/D"    );
 
-
-  ProgressBar p(numGpsEntries);
+  // ProgressBar p(numGpsEntries);
 
   for (unsigned int ientry=0; ientry<numGpsEntries; ientry++){
     icemcGpsTree->GetEntry(ientry);
@@ -104,7 +105,7 @@ int main(int argc, char *argv[]){
     if (index<0) {
       realTime = icemcRealTime;
       phiTrigMask=l1TrigMask=phiTrigMaskH=l1TrigMaskH=65536;
-
+      deadTime = 0;
       cout << "Can't even find best Index for this " << icemcRealTime << ". Last good run was " << irun << endl;
 
     } else {
@@ -121,11 +122,12 @@ int main(int argc, char *argv[]){
       l1TrigMask   = (turf->l2TrigMask  );
       phiTrigMaskH = (turf->phiTrigMaskH);
       l1TrigMaskH  = (turf->l2TrigMaskH );
+      deadTime     = (turf->getDeadTimeFrac() );
       irun         = (turf->run);
     }
     tree->Fill();
       
-    p++;
+    // p++;
   }
   
   cout << "Creating output" << endl;

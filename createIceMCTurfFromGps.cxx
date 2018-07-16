@@ -5,7 +5,7 @@
 #include "SummedTurfRate.h"
 #include "TimedAnitaHeader.h"
 #include "PrettyAnitaHk.h"
-#include "ProgressBar.h"
+// #include "ProgressBar.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TChain.h"
@@ -19,7 +19,6 @@
 #include <iostream>
 #include <fstream>
 
-using namespace Acclaim;
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -41,7 +40,7 @@ int main(int argc, char *argv[]){
   char turfName[FILENAME_MAX];
   // char gpsName[FILENAME_MAX];
 
-  AnitaVersion::set(3);
+  //  AnitaVersion::set(3);
 
   TFile *finput = new TFile("anita3gps_pitchroll_3.root", "read");
   TTree *icemcGpsTree = (TTree*)finput->Get("adu5PatTree");
@@ -94,7 +93,7 @@ int main(int argc, char *argv[]){
   tree->Branch("deadTime",     &deadTime,     "deadTime/D"    );
 
 
-  ProgressBar p(numGpsEntries);
+  // ProgressBar p(numGpsEntries);
 
   for (unsigned int ientry=0; ientry<numGpsEntries; ientry++){
     icemcGpsTree->GetEntry(ientry);
@@ -118,14 +117,16 @@ int main(int argc, char *argv[]){
       if (TMath::Abs(diffTime)>60) cout << icemcRealTime << " " << realTime << " " << diffTime << endl;
       
       phiTrigMask  = (turf->phiTrigMask );
-      l1TrigMask   = (turf->l2TrigMask  );
+      l1TrigMask   = (turf->l1TrigMask  );
       phiTrigMaskH = (turf->phiTrigMaskH);
-      l1TrigMaskH  = (turf->l2TrigMaskH );
+      l1TrigMaskH  = (turf->l1TrigMaskH );
       deadTime     = (turf->getDeadTimeFrac() );
+      std::cout << l1TrigMask << " " << l1TrigMaskH << std::endl;
+
     }
     tree->Fill();
       
-    p++;
+    // p++;
   }
   
   cout << "Creating output" << endl;
