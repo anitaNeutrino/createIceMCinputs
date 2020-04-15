@@ -37,6 +37,48 @@ int main(int argc, char *argv[]){
   const Int_t lastRun = argc==3 ? atoi(argv[2]) : firstRun;
 
 
+  
+  static const int npointThresh = 1640;
+  Float_t threshScanThresh[2][48][npointThresh]; // adc thresholds from threshold scan
+  Float_t threshScanScaler[2][48][npointThresh]; // scalers from threshold scan
+  Float_t minadcthresh[2][48];
+  Float_t maxadcthresh[2][48];
+
+
+  // Reading in last threshold scan before Anita-4 flight
+  // Run 11927
+  TFile *fthresh = new TFile ("data/threshScan_anita4.root");
+  TGraph *gtemp;double rateToThreshold(double rate, int band);
+  
+  double *x, *y;
+  for (int ipol=0;ipol<2;ipol++){
+    for (int iant=0;iant<48;iant++){
+      gtemp = (TGraph*)fthresh->Get(Form("g_%i_%i", ipol, iant));
+      x = gtemp->GetX();
+      y = gtemp->GetY();
+      for (int i=0;i<npointThresh;i++){
+	threshScanThresh[ipol][iant][i] = (Int_t)x[i];
+	threshScanScaler[ipol][iant][i] = (Int_t)y[i];
+      }
+      minadcthresh[ipol][iant]=TMath::MinElement(npointThresh, x);
+      maxadcthresh[ipol][iant]=TMath::MaxElement(npointThresh, x);
+    }
+  }
+
+  // // This channel was turned off during the threshold scan
+  // // We are then using the scan for a different channel
+  // // that had very similar thresholds during the flight
+  // for (int i=0;i<npointThresh;i++){
+  //   threshScanThresh[0][35][i] = threshScanThresh[0][20][i];
+  //   threshScanScaler[0][35][i] = threshScanScaler[0][20][i];
+  // }
+  // minadcthresh[0][35] = minadcthresh[0][20];
+  // maxadcthresh[0][35] = maxadcthresh[0][20];
+  
+  delete gtemp;
+  delete fthresh;
+
+  
   FileStat_t staty;
   char surfName[1000];
   // char gpsName[FILENAME_MAX];
@@ -58,7 +100,7 @@ int main(int argc, char *argv[]){
   // TChain *gpsChain = new TChain("adu5PatTree");
 
   for (int run=firstRun;run<lastRun+1; run++){
-    sprintf(surfName,"/Users/oindreebanerjee/OneDrive/flight1617/surfHk/surfHkFile%d.root",run);
+    sprintf(surfName,"/unix/anita4/flight2016/root/run%d/surfHkFile%d.root",run,run);
     // sprintf(gpsName,"/unix/anita3/flight1415/root/run%d/gpsFile%d.root",run,run);
     if(gSystem->GetPathInfo(surfName,staty)) {
       continue;
@@ -74,13 +116,27 @@ int main(int argc, char *argv[]){
 
   UShort_t thresholds[2][48];
   UShort_t scalers[2][48];
+  
+  Double_t fakeThresholds[2][48];
+  Double_t fakeThresholds2[2][48]; 
+  Double_t fakeScalers[2][48];    
+
+  Float_t threshadc;
+  Double_t thisrate;
+  
+  double constant = 5.87953;
+  double slope = -1.32115;
+  double thispowerthresh=999.;
+
   UInt_t realTime;
 
   TTree* tree = new TTree();
-  tree->Branch("realTime",          &realTime,    "realTime/i"           );
-  tree->Branch("thresholds",        thresholds,   "thresholds[2][48]/s"  );
-  tree->Branch("scalers",           scalers,      "scalers[2][48]/s"     );
-
+  tree->Branch("realTime",         &realTime,        "realTime/i"                  );
+  tree->Branch("thresholds",        thresholds,      "thresholds[2][48]/s"         );
+  tree->Branch("scalers",           scalers,         "scalers[2][48]/s"            );
+  tree->Branch("fakeThreshold",     fakeThresholds,  "fakeThresholds[2][48]/D"     );
+  tree->Branch("fakeThreshold2",    fakeThresholds2, "fakeThresholds2[2][48]/D"    );
+  tree->Branch("fakeScaler",        fakeScalers,     "fakeScalers[2][48]/D"        );
 
   // ProgressBar p(numGpsEntries);
 
@@ -104,9 +160,29 @@ int main(int argc, char *argv[]){
     for (int ipol=AnitaTrigPol::kHorizontal;ipol!=AnitaTrigPol::kNotATrigPol;ipol++){
       for(int iring=AnitaRing::kTopRing;iring!=AnitaRing::kNotARing;iring++){
 	for (int iphi=0;iphi<16;iphi++){
-	  thresholds[ipol-2][iring*16+iphi] = surf->getThreshold(iphi, (AnitaRing::AnitaRing_t)iring, (AnitaTrigPol::AnitaTrigPol_t)ipol);
+	  int iant=iring*16+iphi;
+	  thresholds[ipol-2][iant] = surf->getThreshold(iphi, (AnitaRing::AnitaRing_t)iring, (AnitaTrigPol::AnitaTrigPol_t)ipol);
 	  //	  cout << ipol << " " << iring*16+iphi <<  " " << thresholds[ipol][iring*16+iphi] << endl;
-	  scalers[ipol-2][iring*16+iphi] = surf->getScaler(iphi, (AnitaRing::AnitaRing_t)iring, (AnitaTrigPol::AnitaTrigPol_t)ipol);
+	  scalers[ipol-2][iant] = surf->getScaler(iphi, (AnitaRing::AnitaRing_t)iring, (AnitaTrigPol::AnitaTrigPol_t)ipol);
+
+
+
+	  threshadc = (Float_t)thresholds[ipol-2][iant];
+	
+	  index=TMath::BinarySearch(npointThresh, threshScanThresh[ipol-2][iant], threshadc);
+	  
+	  thisrate=(double)threshScanScaler[ipol-2][iant][index]; // these scalers are in kHz
+	  
+	  thisrate=thisrate/1.e3; // put it in MHz
+	  
+	  thispowerthresh=(log(thisrate)- constant)/slope;
+	  	  
+	  fakeScalers[ipol-2][iant]=thisrate*1.e3;
+	  fakeThresholds[ipol-2][iant]=thispowerthresh;
+	  fakeThresholds2[ipol-2][iant]=(log(scalers[ipol-2][iant]/1.e3)-constant)/slope;
+
+
+	  
 	}
       }
     }
@@ -121,7 +197,7 @@ int main(int argc, char *argv[]){
   
   
   cout << " Writing output " << endl;
-  TFile *output = new TFile (Form("partial/SampleSurf_run%dto%d_anita4.root", firstRun, lastRun), "recreate");
+  TFile *output = new TFile (Form("partial/SampleSurf_run%d_anita4.root", firstRun), "recreate");
   tree->Write("surf_icemc");
   cout << "Done " << endl;
   output->Close();
